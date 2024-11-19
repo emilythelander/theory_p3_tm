@@ -1,18 +1,25 @@
 package tm;
 
-import java.util.HashMap;
-import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class TMSimulator {
 
+    public class Transition{
+        TMState nextState;
+        char writeSymbol;
+        char direction; // 'L' for left, 'R' for right, 'S' for stay
 
+        Transition(TMState nextState, char writeSymbol, char direction) {
+            this.nextState = nextState;
+            this.writeSymbol = writeSymbol;
+            this.direction = direction;
+        }
+    }
     LinkedHashSet<Integer> sigma;
     LinkedHashSet<TMState> states;
     String startState;
     LinkedHashSet<TMState> finalStates;
-    Map<TMState, Map<Character, Set<TMState>>> transitionTable;
+    Map<TMState, Map<Character, Transition>> transitionTable;
 
     public TMSimulator() {
 
@@ -56,6 +63,21 @@ public class TMSimulator {
             }
         }
         return false;
+    }
+
+    public void addTransition (String fromState, String toState, Character direction,
+                               Character read, Character write){
+
+
+        TMState fS = getState(fromState);
+        TMState tS = getState(toState);
+
+        transitionTable.putIfAbsent(fS, new HashMap<>());
+        
+        Transition transition = new Transition(tS, write, direction);
+        transitionTable.get(fS).put(read, transition);
+
+
     }
 
 
