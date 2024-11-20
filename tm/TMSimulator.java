@@ -1,7 +1,9 @@
 package tm;
 
 import java.util.*;
+
 import java.util.stream.Collectors;
+
 
 public class TMSimulator {
 
@@ -109,6 +111,7 @@ public class TMSimulator {
                 transitionTable.get(fS).keySet().stream()
                         .map(c -> String.valueOf((int)c))
                         .collect(Collectors.joining(", ")));
+
 
 
     }
