@@ -38,10 +38,10 @@ public class TMSimulator {
     public void printTransitionTable() {
         System.out.println("Transition Table:");
         TMState test = getState(startState);
-        System.out.println(test);
+//        System.out.println(test);
         for (Map.Entry<TMState, Map<Character, Transition>> stateEntry : transitionTable.entrySet()) {
             TMState currentState = stateEntry.getKey();
-            System.out.println(stateEntry);
+//            System.out.println(stateEntry);
             System.out.println("\nFrom State: " + currentState.getName());
 
             Map<Character, Transition> transitions = stateEntry.getValue();
@@ -116,8 +116,6 @@ public class TMSimulator {
 
     }
 
-
-    // needs a thing where if the input empty then still do it i guess
     public ArrayList<Character> step(String input) {
 
         int headPosition = 1;
@@ -134,10 +132,11 @@ public class TMSimulator {
 
         while (!finalStates.contains(currentState)) {
             char currentSymbol = tape.get(headPosition);
-            char sym = (char)(currentSymbol - '0' ); // covert to numeric
+            char sym =(char)(currentSymbol - '0');
             System.out.println("Current State: " + currentState.getName());
             System.out.println("Current Symbol: " + currentSymbol);
-            System.out.println("sym: " + sym);
+            System.out.println("Current Symbol: after changing  " + sym);
+            System.out.println("sym: " + tape.get(headPosition));
 
             Map<Character, Transition> stateTransitions = transitionTable.get(currentState);
 
@@ -148,29 +147,37 @@ public class TMSimulator {
 //            for (Map.Entry<Character, Transition> transitionEntry : stateTransitions.entrySet()) {
 //                char readSymbol = transitionEntry.getKey();
 //                Transition transition = transitionEntry.getValue();
-//                System.out.printf("  Read: (%d) → State: %s, Write: %c, Move: %c%n",
+//                System.out.printf(" 123 Read: (%d) → State: %s, Write: %c, Move: %c%n",
 //                        (int)readSymbol,
 //                        transition.nextState.getName(),
 //                        transition.writeSymbol,
 //                        transition.direction);
 //            }
 
-            Transition transition = stateTransitions.get(currentSymbol);
+            Transition transition = stateTransitions.get(sym);
             System.out.println(transition);
+            System.out.println("tape before " + tape);
+            System.out.println("write symbol..... " + transition.writeSymbol);
+            System.out.println("direction.... " + transition.direction);
+            System.out.println("head pos " + headPosition);
             tape.set(headPosition, transition.writeSymbol);
 
             switch (transition.direction) {
                 case 'L' -> {
                     headPosition--;
+                    System.out.println("switch for L worked");
                     if (headPosition < 0) {
                         tape.add(0, '0');
                         headPosition = 0;
+                        System.out.println("tape moved left " + tape);
                     }
                 }
                 case 'R' -> {
                     headPosition++;
+                    System.out.println("switch for R worked");
                     if (headPosition >= tape.size()) {
                         tape.add('0');
+                        System.out.println("tape moved right " + tape);
                     }
                 }
             }
@@ -182,12 +189,25 @@ public class TMSimulator {
     }
 
 
+
+
     public void addSigma(int sym) {
         for (int i = 0; i < sym; i++) {
             sigma.add(sym);
         }
 
 
+    }
+
+
+    public TMState getNextState(TMState currentState, char symbol) {
+        Map<Character, Transition> stateTransitions = transitionTable.get(currentState);
+
+        if (stateTransitions != null && stateTransitions.containsKey(symbol)) {
+            return stateTransitions.get(symbol).nextState;
+        }
+
+        return null;
     }
     public Set<Integer> getSigma() {
         return sigma;

@@ -19,7 +19,7 @@ public class test{
 
         TMSimulator tm = new TMSimulator();
 
-        String filePath = "test/file5.txt";
+        String filePath = "test/file2.txt";
 
         List<String> partsList = new ArrayList<>();
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
@@ -63,28 +63,25 @@ public class test{
         // if state has all sigmas then do stuff idk
         tm.setStart("0");
         tm.setFinal(String.valueOf(states - 1));
-        for (int i = 2; i < partsList.size()-1; i++){
+        for (int i = 2; i < partsList.size(); i++){
             if (sigmaIndex == tm.getMaxSigma()+1){
                 sigmaIndex = 0;
                 index++;
+                System.out.println("Moving to next state: " + index);
             }
+
             if (tm.isFinal(String.valueOf(index))){
-                System.out.println("the index is " + index);
+                System.out.println("Found final state at index: " + index);
                 break;
             }
+
             String[] parts = partsList.get(i).split(",");
-//            System.out.println("parts " + Arrays.toString(parts));
-//            System.out.println("parts 1 " + parts[0]);
+            System.out.println("Adding transition from state " + index + " with sigma " + sigmaIndex);
+            System.out.println("Transition details: To state=" + parts[0] + ", Write=" + parts[1] + ", Direction=" + parts[2]);
 
-            tm.addTransition(String.valueOf(index),parts[0],parts[2].charAt(0), (char) sigmaIndex,parts[1].charAt(0));
+            tm.addTransition(String.valueOf(index), parts[0], parts[2].charAt(0), (char) sigmaIndex, parts[1].charAt(0));
             sigmaIndex++;
-            System.out.println("sigma " + sigmaIndex);
-
-
-
-
         }
-
         tm.printTransitionTable();
 
 
@@ -100,6 +97,5 @@ public class test{
 
     }
 }
-
 
 
