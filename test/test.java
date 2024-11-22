@@ -19,7 +19,7 @@ public class test{
 
         TMSimulator tm = new TMSimulator();
 
-        String filePath = "test/file2.txt";
+        String filePath = "test/file5.txt";
 
         List<String> partsList = new ArrayList<>();
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
@@ -31,7 +31,6 @@ public class test{
 
 
                 for (String part : parts) {
-                    System.out.println(part);
                     partsList.add(part);
                 }
 
@@ -40,7 +39,6 @@ public class test{
             e.printStackTrace();
         }
 
-        System.out.println(partsList);
 
 
         int states = Integer.parseInt(partsList.get(0));
@@ -49,14 +47,12 @@ public class test{
             tm.addState(String.valueOf(i));
         }
         LinkedHashSet<TMState> idk = tm.getAllStates();
-        System.out.println("sttates" + idk);
 
         int alphabet = Integer.parseInt(partsList.get(1));
 
         for (int i = 0; i < alphabet+1; i++){
             tm.addSigma(i);
         }
-        System.out.println("sigma is " + tm.getSigma());
         // things to check what state we are in
         int index = 0;
         int sigmaIndex = 0;
@@ -67,32 +63,32 @@ public class test{
             if (sigmaIndex == tm.getMaxSigma()+1){
                 sigmaIndex = 0;
                 index++;
-                System.out.println("Moving to next state: " + index);
             }
 
             if (tm.isFinal(String.valueOf(index))){
-                System.out.println("Found final state at index: " + index);
                 break;
             }
 
             String[] parts = partsList.get(i).split(",");
-            System.out.println("Adding transition from state " + index + " with sigma " + sigmaIndex);
-            System.out.println("Transition details: To state=" + parts[0] + ", Write=" + parts[1] + ", Direction=" + parts[2]);
 
             tm.addTransition(String.valueOf(index), parts[0], parts[2].charAt(0), (char) sigmaIndex, parts[1].charAt(0));
             sigmaIndex++;
         }
-        tm.printTransitionTable();
+//        tm.printTransitionTable();
 
 
-        System.out.println(tm.getAllStates());
-        System.out.println(tm.getSigma());
-        System.out.println(partsList.get(2));
-        System.out.println("last part " + partsList.get(partsList.size()-1));
+//        System.out.println(tm.getAllStates());
+//        System.out.println(tm.getSigma());
+//        System.out.println(partsList.get(2));
+//        System.out.println("last part " + partsList.get(partsList.size()-1));
 
 //        ArrayList<Character> tape = tm.step(partsList.get(partsList.size()-1));
         ArrayList<Character> tape = tm.step("");
-        System.out.println(tape);
+        StringBuilder tapeString = new StringBuilder();
+        for (char c : tape) {
+            tapeString.append(c);
+        }
+        System.out.println(tapeString.toString());
 
 
     }

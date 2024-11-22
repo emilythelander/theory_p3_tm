@@ -37,11 +37,8 @@ public class TMSimulator {
 
     public void printTransitionTable() {
         System.out.println("Transition Table:");
-        TMState test = getState(startState);
-//        System.out.println(test);
         for (Map.Entry<TMState, Map<Character, Transition>> stateEntry : transitionTable.entrySet()) {
             TMState currentState = stateEntry.getKey();
-//            System.out.println(stateEntry);
             System.out.println("\nFrom State: " + currentState.getName());
 
             Map<Character, Transition> transitions = stateEntry.getValue();
@@ -95,7 +92,6 @@ public class TMSimulator {
 
 
         TMState fS = getState(fromState);
-        System.out.println("from state " + fromState);
         TMState tS = getState(toState);
 
         if (fS == null || tS == null){
@@ -107,10 +103,6 @@ public class TMSimulator {
 
         Transition transition = new Transition(tS, write, direction);
         transitionTable.get(fS).put(read, transition);
-        System.out.println("Keys in transition table: " +
-                transitionTable.get(fS).keySet().stream()
-                        .map(c -> String.valueOf((int)c))
-                        .collect(Collectors.joining(", ")));
 
 
 
@@ -132,11 +124,7 @@ public class TMSimulator {
 
         while (!finalStates.contains(currentState)) {
             char currentSymbol = tape.get(headPosition);
-            char sym =(char)(currentSymbol - '0');
-            System.out.println("Current State: " + currentState.getName());
-            System.out.println("Current Symbol: " + currentSymbol);
-            System.out.println("Current Symbol: after changing  " + sym);
-            System.out.println("sym: " + tape.get(headPosition));
+            char sym =(char)(currentSymbol - '0'); // change to numeric thing
 
             Map<Character, Transition> stateTransitions = transitionTable.get(currentState);
 
@@ -144,46 +132,28 @@ public class TMSimulator {
                 System.out.println("No valid transition found");
                 break;
             }
-//            for (Map.Entry<Character, Transition> transitionEntry : stateTransitions.entrySet()) {
-//                char readSymbol = transitionEntry.getKey();
-//                Transition transition = transitionEntry.getValue();
-//                System.out.printf(" 123 Read: (%d) → State: %s, Write: %c, Move: %c%n",
-//                        (int)readSymbol,
-//                        transition.nextState.getName(),
-//                        transition.writeSymbol,
-//                        transition.direction);
-//            }
+
 
             Transition transition = stateTransitions.get(sym);
-            System.out.println(transition);
-            System.out.println("tape before " + tape);
-            System.out.println("write symbol..... " + transition.writeSymbol);
-            System.out.println("direction.... " + transition.direction);
-            System.out.println("head pos " + headPosition);
             tape.set(headPosition, transition.writeSymbol);
 
             switch (transition.direction) {
                 case 'L' -> {
                     headPosition--;
-                    System.out.println("switch for L worked");
                     if (headPosition < 0) {
                         tape.add(0, '0');
                         headPosition = 0;
-                        System.out.println("tape moved left " + tape);
                     }
                 }
                 case 'R' -> {
                     headPosition++;
-                    System.out.println("switch for R worked");
                     if (headPosition >= tape.size()) {
                         tape.add('0');
-                        System.out.println("tape moved right " + tape);
                     }
                 }
             }
 
-            currentState = transition.nextState;
-            System.out.println(" tape now " + tape);
+            currentState = transition.nextState;;
         }
         return tape;
     }
