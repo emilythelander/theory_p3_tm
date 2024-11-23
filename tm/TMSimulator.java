@@ -1,11 +1,92 @@
 package tm;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.*;
 
 import java.util.stream.Collectors;
 
+import tm.TMSimulator.Transition;
 
+
+/**
+ * CS 361 Project 3
+ * @author Emily Thelander
+ * @author Spencer Patillo
+ */
 public class TMSimulator {
+
+    public static void main(String[]args) {
+        if (args.length < 1) {
+            System.out.println("Incorrect command line arg usage\n");
+            return;
+        }
+
+        TMSimulator tm = new TMSimulator();
+
+        String fileName = args[0];
+        String filePath = "tm/" + fileName;
+
+        List<String> partsList = new ArrayList<>();
+        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+            String line;
+
+            while ((line = br.readLine()) != null) {
+
+                String[] parts = line.split("\\s+");
+
+
+                for (String part : parts) {
+                    partsList.add(part);
+                }
+
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        int states = Integer.parseInt(partsList.get(0));
+
+        for (int i = 0; i < states; i++){
+            tm.addState(String.valueOf(i));
+        }
+        LinkedHashSet<TMState> idk = tm.getAllStates();
+
+        int alphabet = Integer.parseInt(partsList.get(1));
+
+        for (int i = 0; i < alphabet+1; i++){
+            tm.addSigma(i);
+        }
+        // things to check what state we are in
+        int index = 0;
+        int sigmaIndex = 0;
+        // if state has all sigmas then do stuff idk
+        tm.setStart("0");
+        tm.setFinal(String.valueOf(states - 1));
+        for (int i = 2; i < partsList.size(); i++){
+            if (sigmaIndex == tm.getMaxSigma()+1){
+                sigmaIndex = 0;
+                index++;
+            }
+
+            if (tm.isFinal(String.valueOf(index))){
+                break;
+            }
+
+            String[] parts = partsList.get(i).split(",");
+
+            tm.addTransition(String.valueOf(index), parts[0], parts[2].charAt(0), (char) sigmaIndex, parts[1].charAt(0));
+            sigmaIndex++;
+        }
+
+        ArrayList<Character> tape = tm.step("");
+        StringBuilder tapeString = new StringBuilder();
+        for (char c : tape) {
+            tapeString.append(c);
+        }
+        System.out.println(tapeString.toString());
+    }
 
     public class Transition{
         TMState nextState;
@@ -221,5 +302,7 @@ public class TMSimulator {
     public LinkedHashSet<TMState> getAllStates(){
         return states;
     }
+
+    
 
 }
